@@ -1,5 +1,6 @@
 import unittest
 from typing import List
+from pprint import pprint
 from pyvin import VIN, VINError, DecodedVIN, RAISE, SKIP, PASS
 from .vin_samples import (INVALID,
                           DECODED_TOYOTA_COROLLA,
@@ -16,7 +17,7 @@ class TestPyVin(unittest.TestCase):
         ''' This may test future behavior:
         with self.assertRaises(VINError):
             VIN(INVALID)'''
-        self.assertEquals(vins, [])
+        self.assertEqual(vins, [])
 
     def test_vin_multi(self):
         """When multiple vins are input (Iterable or as separate args),
@@ -48,5 +49,5 @@ class TestPyVin(unittest.TestCase):
 
     def test_vin_attrs(self):
         vin = VIN(TOYOTA_COROLLA)
-        self.assertEqual(vin.__dict__,
-                         DECODED_TOYOTA_COROLLA)
+        attrs = {k:v for k,v in vin.__dict__.items() if '__' not in k}
+        self.assertDictEqual(attrs, DECODED_TOYOTA_COROLLA)
