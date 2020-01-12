@@ -1,2 +1,2 @@
-from .pyvin import VIN
-from .pyvin import VINError
+from .pyvin import DecodedVIN, VIN
+from .errors import VINError

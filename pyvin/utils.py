@@ -1,6 +1,6 @@
 import logging
 from typing import List
-from pyvin import VINError
+from .errors import VINError
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -85,3 +85,12 @@ def validate_vin(vin:str):
     trans_vin = _transliterate(vin=vin)
     rem = _remainder_sum_weighted(trans_vin=trans_vin)
     _compare_check_digit(vin=vin, remainder=rem)
+
+def clean_vins(vins: List[str]) -> list:
+    remove = []
+    for vin in vins:
+        try:
+            validate_vin(vin=vin)
+        except VINError:
+            remove.append(vin)
+    return [x for x in vins if x not in remove]
