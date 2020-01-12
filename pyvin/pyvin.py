@@ -3,4 +3,5 @@ class VINError(Exception):
     pass
 
 class VIN():
+    #TODO
     pass
