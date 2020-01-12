@@ -1,19 +1,22 @@
 import unittest
 from typing import List
-from pyvin import VIN, VINError, DecodedVIN
+from pyvin import VIN, VINError, DecodedVIN, RAISE, SKIP, PASS
 from .vin_samples import (INVALID,
                           DECODED_TOYOTA_COROLLA,
                           TOYOTA_COROLLA,
                           HYUNDAI_ELANTRA)
 
 class TestPyVin(unittest.TestCase):
-    def test_vin_invalid(self):
-        with self.assertRaises(VINError):
-            vin = VIN(INVALID)
-
     def test_vin_single(self):
         vin = VIN(TOYOTA_COROLLA)
         self.assertIsInstance(vin, DecodedVIN)
+
+    def test_vin_single_invalid(self):
+        vins = VIN(INVALID)
+        ''' This may test future behavior:
+        with self.assertRaises(VINError):
+            VIN(INVALID)'''
+        self.assertEquals(vins, [])
 
     def test_vin_multi(self):
         """When multiple vins are input (Iterable or as separate args),
@@ -21,20 +24,27 @@ class TestPyVin(unittest.TestCase):
         """
         samples = (TOYOTA_COROLLA, HYUNDAI_ELANTRA)
         vins = VIN(*samples)
-        self.assertIsInstance(vins, List[DecodedVIN])
-        vins = VIN(samples)
-        self.assertIsInstance(vins, List[DecodedVIN])
+        self.assertEqual(len(samples), len(vins))
+        for vin in vins:
+            self.assertIsInstance(vin, DecodedVIN)
 
     def test_invalid_in_multi(self):
+        samples = (INVALID, TOYOTA_COROLLA)
+        vins = VIN(*samples)
+        self.assertEqual(len([x for x in samples if x is not INVALID]),
+                         len(vins))
+
+    def test_invalid_in_multi_raise(self):
+        samples = (INVALID, TOYOTA_COROLLA)
+        with self.assertRaises(VINError):
+            vins = VIN(*samples, error_handling=RAISE)
+
+    def test_invalid_in_multi_pass(self):
         """If invalid vin is present in list, make sure it is handled as specified"""
         samples = (INVALID, TOYOTA_COROLLA)
-        vins = VIN(*samples, raise_on_error=False)
-        self.assertCountEqual(samples, vins)
-        vins = VIN(*samples, skip_on_error=True)
-        self.assertCountEqual([x for x in samples if x is not INVALID],
-                              vins)
-        with self.assertRaises(VINError):
-            vins = VIN(*samples, raise_on_error=True)
+        vins = VIN(*samples, error_handling=PASS)
+        self.assertEqual(len([x for x in samples if x is not INVALID]),
+                         len(vins))
 
     def test_vin_attrs(self):
         vin = VIN(TOYOTA_COROLLA)
