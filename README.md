@@ -1,2 +1,2 @@
-# pyvin
-PyVIN vin decoder
+# PyVIN
+A Vehicle Identification Number (VIN) decoder for Python!
