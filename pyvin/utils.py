@@ -1,3 +1,9 @@
+"""PyVIN utilities.
+Contains all actions that do not interact with the NHTSA API:
+- VIN validation
+- Removal of invalid VINs from a list
+"""
+
 import logging
 from typing import List
 from .errors import VINError
@@ -38,6 +44,17 @@ _TRANS_LOOKUP = {'A': 1,
 _WEIGHTING_FACTORS = (8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2)
 
 def _transliterate(vin: str) -> List[int]:
+    """Uses transliteration table to convert letters into int values
+
+    Arguments:
+        vin {str}
+
+    Raises:
+        VINError: if character cannot be transliterated
+
+    Returns:
+        List[int] -- transliterated VIN
+    """
     try:
         return [int(x) if x.isdigit() else _TRANS_LOOKUP[x] for x in vin]
     except KeyError as e:
@@ -87,6 +104,14 @@ def validate_vin(vin:str):
     _compare_check_digit(vin=vin, remainder=rem)
 
 def clean_vins(vins: List[str]) -> list:
+    """Removes invalid VINs from a list of VINs
+    
+    Arguments:
+        vins {List[str]}
+    
+    Returns:
+        list
+    """
     remove = []
     for vin in vins:
         try:
