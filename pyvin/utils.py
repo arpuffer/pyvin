@@ -57,8 +57,8 @@ def _transliterate(vin: str) -> List[int]:
     """
     try:
         return [int(x) if x.isdigit() else _TRANS_LOOKUP[x] for x in vin]
-    except KeyError as e:
-        raise VINError('Invalid char "%s"' % e.args)
+    except KeyError as err:
+        raise VINError('Invalid char "%s"' % err.args)
 
 def _remainder_sum_weighted(trans_vin: List[int]) -> int:
     """Compute the remainder of the sum of weighted VIN character values.
