@@ -59,7 +59,7 @@ def _transliterate(vin: str) -> List[int]:
         return [int(x) if x.isdigit() else _TRANS_LOOKUP[x] for x in vin]
     except KeyError as e:
         raise VINError('Invalid char "%s"' % e.args)
-    
+
 def _remainder_sum_weighted(trans_vin: List[int]) -> int:
     """Compute the remainder of the sum of weighted VIN character values.
     Transliterated VIN's weighted values (from _WEIGHTING_FACTORS table) are
@@ -93,7 +93,7 @@ def _compare_check_digit(vin: str, remainder: int):
         raise VINError('Invalid check digit! %s does not match computed val %s' % (check_digit, rem_val))
     logger.debug("%s check [OK]")
 
-def validate_vin(vin:str):
+def validate_vin(vin: str):
     """Used to verify VIN independently of the NHTSA API.
 
     Args:
@@ -105,10 +105,10 @@ def validate_vin(vin:str):
 
 def clean_vins(vins: List[str]) -> list:
     """Removes invalid VINs from a list of VINs
-    
+
     Arguments:
         vins {List[str]}
-    
+
     Returns:
         list
     """

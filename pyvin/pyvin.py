@@ -56,8 +56,8 @@ def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:
     if not vin_list:
         return []
     vin_str = ';'.join(vin_list)
-    # resp = _SESSION.post(url=_URL, params=_DEFAULT_PARAMS, data=vin_str)  # TODO: Why didn't this work?
-    resp = _SESSION.post(url=_URL + vin_str + '?' , params=_DEFAULT_PARAMS)
+    #resp = _SESSION.post(url=_URL, params=_DEFAULT_PARAMS, data=vin_str)  # TODO:Didn't work
+    resp = _SESSION.post(url=_URL + vin_str + '?', params=_DEFAULT_PARAMS)
     results = resp.json().get(_RESULTS, [])
     if len(vins) == 1:
         return DecodedVIN(results[0])
