@@ -22,7 +22,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name=PKG,
-    version=VERSION
+    version=VERSION,
     author="Alex Puffer",
     description="Python VIN decoder",
     long_description=LONG_DESCRIPTION,
