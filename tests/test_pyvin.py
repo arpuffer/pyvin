@@ -5,7 +5,8 @@ from pyvin import VIN, VINError, DecodedVIN, RAISE, SKIP, PASS
 from .vin_samples import (INVALID,
                           DECODED_TOYOTA_COROLLA,
                           TOYOTA_COROLLA,
-                          HYUNDAI_ELANTRA)
+                          HYUNDAI_ELANTRA,
+                          BATCH)
 
 class TestPyVin(unittest.TestCase):
     def test_vin_single(self):
@@ -19,7 +20,7 @@ class TestPyVin(unittest.TestCase):
             VIN(INVALID)'''
         self.assertEqual(vins, [])
 
-    def test_vin_multi(self):
+    def test_vin_multi_minimal(self):
         """When multiple vins are input (Iterable or as separate args),
         return a list of decoded vins
         """
@@ -28,6 +29,11 @@ class TestPyVin(unittest.TestCase):
         self.assertEqual(len(samples), len(vins))
         for vin in vins:
             self.assertIsInstance(vin, DecodedVIN)
+
+    def test_vin_multi_large_batch(self):
+        samples = BATCH
+        vins = VIN(*samples)
+        self.assertEqual(len(samples), len(vins))
 
     def test_invalid_in_multi(self):
         samples = (INVALID, TOYOTA_COROLLA)

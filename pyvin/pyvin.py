@@ -9,11 +9,8 @@ from requests import Session
 from .errors import VINError
 from .utils import clean_vins, validate_vin
 
-_URL = 'https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesBatch/'
-_DEFAULT_PARAMS = {'format': 'json'}
-_HEADERS = {'Content-type':'application/json', 'Accept':'application/json'}
+_URL = 'https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVINValuesBatch/'
 _SESSION = Session()
-_SESSION.headers.update(_HEADERS)
 _MAX_BATCH_SIZE = 100
 _RESULTS = 'Results'
 
@@ -56,8 +53,9 @@ def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:
     if not vin_list:
         return []
     vin_str = ';'.join(vin_list)
-    #resp = _SESSION.post(url=_URL, params=_DEFAULT_PARAMS, data=vin_str)  # TODO:Didn't work
-    resp = _SESSION.post(url=_URL + vin_str + '?', params=_DEFAULT_PARAMS)
+    post_fields = {'format': 'json',
+                   'data': vin_str}
+    resp = _SESSION.post(url=_URL, data=post_fields)
     results = resp.json().get(_RESULTS, [])
     if len(vins) == 1:
         return DecodedVIN(results[0])
