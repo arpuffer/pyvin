@@ -12,6 +12,7 @@ from .vin_samples import (INVALID,
 class TestValidateVin(unittest.TestCase):
     def test_validate_vin(self):
         self.assertIsNone(validate_vin(TOYOTA_COROLLA))
+        self.assertIsNone(validate_vin(TOYOTA_COROLLA, HYUNDAI_ELANTRA))
         with self.assertRaises(VINError):
             validate_vin(INVALID)
 

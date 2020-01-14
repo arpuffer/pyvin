@@ -94,15 +94,16 @@ def _compare_check_digit(vin: str, remainder: int):
         raise VINError(msg)
     logger.debug("%s check [OK]")
 
-def validate_vin(vin: str):
+def validate_vin(*vin: str):
     """Used to verify VIN independently of the NHTSA API.
 
     Args:
         vin (str)
     """
-    trans_vin = _transliterate(vin=vin)
-    rem = _remainder_sum_weighted(trans_vin=trans_vin)
-    _compare_check_digit(vin=vin, remainder=rem)
+    for v in vin:
+        trans_vin = _transliterate(vin=v)
+        rem = _remainder_sum_weighted(trans_vin=trans_vin)
+        _compare_check_digit(vin=v, remainder=rem)
 
 def clean_vins(vins: List[str]) -> list:
     """Removes invalid VINs from a list of VINs
@@ -116,7 +117,7 @@ def clean_vins(vins: List[str]) -> list:
     remove = []
     for vin in vins:
         try:
-            validate_vin(vin=vin)
+            validate_vin(vin)
         except VINError:
             remove.append(vin)
     return [x for x in vins if x not in remove]

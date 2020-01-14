@@ -16,7 +16,7 @@ _RESULTS = 'Results'
 
 RAISE = 'RAISE'
 SKIP = 'SKIP'
-PASS = 'PASS'  # TODO: Not yet implemented
+PASS = 'PASS'
 
 class DecodedVIN():
     """VIN decoded by the NHTSA API.  Attributes are generated from the
@@ -40,23 +40,26 @@ def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:
     Returns:
         Union[List[DecodedVIN], DecodedVIN] -- Decoded VIN result
     """
-    if len(vins) > _MAX_BATCH_SIZE:
+    count = len(vins)
+    if count > _MAX_BATCH_SIZE:
         raise VINError('VIN count exceeds Max Batch Size of %s' % _MAX_BATCH_SIZE)
+
     if error_handling == SKIP:
-        vin_list = clean_vins(vins)
+        vins = clean_vins(vins)
     elif error_handling == RAISE:
-        vin_list = vins
-        for vin in vin_list:
-            validate_vin(vin)
+        validate_vin(*vins)
+    elif error_handling == PASS:
+        pass
     else:
-        raise KeyError('Error handling %s must be %s or %s' % (error_handling, RAISE, SKIP))
-    if not vin_list:
+        raise VINError('error_handling must be PASS, RAISE, or SKIP')
+
+    if not vins:
         return []
-    vin_str = ';'.join(vin_list)
+    vin_str = ';'.join(vins)
     post_fields = {'format': 'json',
                    'data': vin_str}
     resp = _SESSION.post(url=_URL, data=post_fields)
     results = resp.json().get(_RESULTS, [])
-    if len(vins) == 1:
+    if count == 1:
         return DecodedVIN(results[0])
     return [DecodedVIN(x) for x in results]

@@ -47,10 +47,9 @@ class TestPyVin(unittest.TestCase):
             VIN(*samples, error_handling=RAISE)
 
     def test_invalid_in_multi_pass(self):
-        """If invalid vin is present in list, make sure it is handled as specified"""
         samples = (INVALID, TOYOTA_COROLLA)
         vins = VIN(*samples, error_handling=PASS)
-        self.assertEqual(len([x for x in samples if x is not INVALID]),
+        self.assertEqual(len(samples),
                          len(vins))
 
     def test_vin_attrs(self):
