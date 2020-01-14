@@ -90,7 +90,8 @@ def _compare_check_digit(vin: str, remainder: int):
     else:
         rem_val = str(remainder)
     if check_digit != rem_val:
-        raise VINError('Invalid check digit! %s does not match computed val %s' % (check_digit, rem_val))
+        msg = 'Invalid check digit! %s does not match computed val %s' % (check_digit, rem_val)
+        raise VINError(msg)
     logger.debug("%s check [OK]")
 
 def validate_vin(vin: str):
