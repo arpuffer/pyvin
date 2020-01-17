@@ -1,7 +1,7 @@
 # Release History
 
 
-### dev
+### 0.0.2 (2020-01-16)
 -------
 
 **Bugfixes**
