@@ -12,7 +12,7 @@ Out[2]: ('TOYOTA', 'Corolla', '1993')
 
 In [3]: my_vins = ('JT2AE09W4P0038539', 'KMHD35LH5EU205042')
 
-In [4]: my_vehicles = VIN(my_vins)
+In [4]: my_vehicles = VIN(*my_vins)
 
 In [5]: for veh in my_vehicles:
    ...:     print(veh.Make, veh.Model, veh.ModelYear)
