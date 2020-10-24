@@ -19,7 +19,7 @@ setup(
     packages=find_packages(),
     provides=[PKG],
     install_requires= [
-        requests
+        "requests"
     ],
     test_suite='tests',
     classifiers=[
