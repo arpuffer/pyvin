@@ -20,7 +20,7 @@ setup(
     provides=[PKG],
     install_requires= [
         requests
-    ]
+    ],
     test_suite='tests',
     classifiers=[
         "Programming Language :: Python :: 3",
