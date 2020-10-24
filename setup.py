@@ -5,18 +5,6 @@ from setuptools import setup, find_packages
 PKG = 'pyvin'
 VERSION = __import__(PKG).get_version()
 
-def requirements_file_to_list(filename: str = "requirements.txt") -> List:
-    """Create list of requirements from requirements.txt file
-
-    Args:
-        filename (str, optional): . Defaults to "requirements.txt".
-
-    Returns:
-        List
-    """
-    with open(filename, 'r') as infile:
-        return [x.rstrip() for x in list(infile) if x and not x.startswith('#')]
-
 with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
@@ -30,7 +18,9 @@ setup(
     url="https://github.com/arpuffer/pyvin",
     packages=find_packages(),
     provides=[PKG],
-    install_requires=requirements_file_to_list(),
+    install_requires= [
+        requests
+    ]
     test_suite='tests',
     classifiers=[
         "Programming Language :: Python :: 3",
