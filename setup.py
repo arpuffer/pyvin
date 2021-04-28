@@ -1,8 +1,11 @@
 """setup pyvin library"""
 
 from setuptools import setup, find_packages
+
+from pyvin.version import get_version
+
 PKG = 'pyvin'
-VERSION = __import__(PKG).get_version()
+VERSION = get_version()
 
 
 setup(
