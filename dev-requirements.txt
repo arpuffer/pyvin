@@ -7,3 +7,4 @@ mypy~=0.812
 pytest~=6.2.3
 pytest-cov~=2.11.1
 tox~=3.23.0
+setuptools~=56.0.0
