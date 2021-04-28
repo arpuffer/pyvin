@@ -16,9 +16,6 @@ jobs:
       - name: Install Python dependencies
         uses: py-actions/py-dependency-install@v2
         with:
-          update-pip: "true"
-          update-setuptools: "true"
-          update-wheel: "true"
           path: "requirements.txt"
       - name: Tox
         run: |
