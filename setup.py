@@ -2,10 +2,10 @@
 
 from setuptools import setup, find_packages
 
-from pyvin.version import get_version
+import pkg_resources  # part of setuptools
+VERSION = pkg_resources.require("pyvin")[0].version
 
 PKG = 'pyvin'
-VERSION = get_version()
 
 
 setup(
