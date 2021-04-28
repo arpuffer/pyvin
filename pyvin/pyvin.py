@@ -4,8 +4,10 @@ Given one or more VINs, validates and returns decoded data with Yeah, Make, Mode
 and many other informational fields
 """
 
+from json.decoder import JSONDecodeError
 from typing import List, Union
 from requests import Session
+from retry import retry
 from .errors import VINError
 from .utils import clean_vins, validate_vin
 
@@ -22,10 +24,14 @@ PASS = 'PASS'
 class DecodedVIN:  # pylint:disable=too-few-public-methods
     """VIN decoded by the NHTSA API.  Attributes are generated from the
     API json response"""
+
     def __init__(self, data: dict):
         self.__dict__.update(data)
 
 
+@retry(exceptions=JSONDecodeError,
+       tries=10,
+       delay=10)
 def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:  # pylint:disable=invalid-name
     """Decode one or more VINs
 
