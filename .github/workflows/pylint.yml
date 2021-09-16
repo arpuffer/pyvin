@@ -1,0 +1,23 @@
+name: Pyvin post commit steps
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.7', '3.8', '3.9']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v2
+        with:
+          path: "requirements.txt"
+      - name: Tox
+        run: |
+          pip install -r dev-requirements.txt
+          tox

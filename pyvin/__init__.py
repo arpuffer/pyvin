@@ -1,3 +1,4 @@
+"""Pyvin Library"""
 from .pyvin import (VIN,
                     DecodedVIN,
                     RAISE,
@@ -6,7 +7,6 @@ from .pyvin import (VIN,
 from .errors import VINError
 from .utils import clean_vins, validate_vin
 
-_VERSION = '0.0.2'
+__version__ = '0.0.3'
 
-def get_version():
-    return _VERSION
+__all__ = ['VIN', 'DecodedVIN', 'RAISE', 'SKIP', 'PASS', 'VINError', 'clean_vins', 'validate_vin']

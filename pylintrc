@@ -1,0 +1,5 @@
+[GENERAL]
+extension-pkg-whitelist=pyodbc
+
+[FORMAT]
+max-line-length=120

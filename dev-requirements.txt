@@ -1,0 +1,10 @@
+virtualenv~=20.4.4
+pip~=21.1
+wheel~=0.36.2
+pylint~=2.8.2
+flake8~=3.9.1
+mypy~=0.812
+pytest~=6.2.3
+pytest-cov~=2.11.1
+tox~=3.23.0
+setuptools~=56.0.0

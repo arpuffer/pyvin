@@ -1,0 +1,13 @@
+[paths]
+source =
+   pyvin
+
+[run]
+branch = true
+parallel = true
+source =
+    pyvin
+
+[report]
+show_missing = true
+precision = 2

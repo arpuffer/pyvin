@@ -4,8 +4,10 @@ Given one or more VINs, validates and returns decoded data with Yeah, Make, Mode
 and many other informational fields
 """
 
+from json.decoder import JSONDecodeError
 from typing import List, Union
 from requests import Session
+from retry import retry
 from .errors import VINError
 from .utils import clean_vins, validate_vin
 
@@ -18,13 +20,19 @@ RAISE = 'RAISE'
 SKIP = 'SKIP'
 PASS = 'PASS'
 
-class DecodedVIN():
+
+class DecodedVIN:  # pylint:disable=too-few-public-methods
     """VIN decoded by the NHTSA API.  Attributes are generated from the
     API json response"""
+
     def __init__(self, data: dict):
         self.__dict__.update(data)
 
-def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:
+
+@retry(exceptions=JSONDecodeError,
+       tries=10,
+       delay=10)
+def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:  # pylint:disable=invalid-name
     """Decode one or more VINs
 
     Keyword Arguments:
@@ -40,10 +48,6 @@ def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:
     Returns:
         Union[List[DecodedVIN], DecodedVIN] -- Decoded VIN result
     """
-    count = len(vins)
-    if count > _MAX_BATCH_SIZE:
-        raise VINError('VIN count exceeds Max Batch Size of %s' % _MAX_BATCH_SIZE)
-
     if error_handling == SKIP:
         vins = clean_vins(vins)
     elif error_handling == RAISE:
@@ -55,6 +59,11 @@ def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:
 
     if not vins:
         return []
+
+    count = len(vins)
+    if count > _MAX_BATCH_SIZE:
+        raise VINError('VIN count exceeds Max Batch Size of %s' % _MAX_BATCH_SIZE)
+
     vin_str = ';'.join(vins)
     post_fields = {'format': 'json',
                    'data': vin_str}

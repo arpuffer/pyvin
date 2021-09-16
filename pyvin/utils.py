@@ -5,7 +5,7 @@ Contains all actions that do not interact with the NHTSA API:
 """
 
 import logging
-from typing import List
+from typing import List, Tuple
 from .errors import VINError
 
 logger = logging.getLogger()
@@ -15,7 +15,8 @@ _CHECK_DIGIT_INDEX = 8
 _SUM_WEIGHTED_DIVIDEBY = 11
 _VIN_LENGTH = 17
 
-#transliteration lookup table
+
+# transliteration lookup table
 _TRANS_LOOKUP = {'A': 1,
                  'B': 2,
                  'C': 3,
@@ -43,6 +44,7 @@ _TRANS_LOOKUP = {'A': 1,
 # Positional weighting factors - by index of VIN string
 _WEIGHTING_FACTORS = (8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2)
 
+
 def _transliterate(vin: str) -> List[int]:
     """Uses transliteration table to convert letters into int values
 
@@ -58,7 +60,8 @@ def _transliterate(vin: str) -> List[int]:
     try:
         return [int(x) if x.isdigit() else _TRANS_LOOKUP[x] for x in vin]
     except KeyError as err:
-        raise VINError('Invalid char "%s"' % err.args)
+        raise VINError('Invalid char "%s"' % err.args) from err
+
 
 def _remainder_sum_weighted(trans_vin: List[int]) -> int:
     """Compute the remainder of the sum of weighted VIN character values.
@@ -73,6 +76,7 @@ def _remainder_sum_weighted(trans_vin: List[int]) -> int:
     """
     sum_weighted = sum([x * y for x, y in zip(trans_vin, _WEIGHTING_FACTORS)])
     return sum_weighted % _SUM_WEIGHTED_DIVIDEBY
+
 
 def _compare_check_digit(vin: str, remainder: int):
     """Compares check digit against remainder value
@@ -94,18 +98,26 @@ def _compare_check_digit(vin: str, remainder: int):
         raise VINError(msg)
     logger.debug("%s check [OK]")
 
-def validate_vin(*vin: str):
+
+def validate_vin(*vins: str):
     """Used to verify VIN independently of the NHTSA API.
 
     Args:
-        vin (str)
+        vins (str)
     """
-    for v in vin:
-        trans_vin = _transliterate(vin=v)
-        rem = _remainder_sum_weighted(trans_vin=trans_vin)
-        _compare_check_digit(vin=v, remainder=rem)
+    for vin in vins:
+        if vin is None:
+            raise VINError('VIN cannot be None')
 
-def clean_vins(vins: List[str]) -> list:
+        if len(vin) != _VIN_LENGTH:
+            raise VINError('Invalid VIN length (must be 17 characters): {}'.format(len(vin)))
+
+        trans_vin = _transliterate(vin=vin)
+        rem = _remainder_sum_weighted(trans_vin=trans_vin)
+        _compare_check_digit(vin=vin, remainder=rem)
+
+
+def clean_vins(vins: Tuple[str, ...]) -> Tuple[str, ...]:
     """Removes invalid VINs from a list of VINs
 
     Arguments:
@@ -120,4 +132,4 @@ def clean_vins(vins: List[str]) -> list:
             validate_vin(vin)
         except VINError:
             remove.append(vin)
-    return [x for x in vins if x not in remove]
+    return tuple(x for x in vins if x not in remove)
