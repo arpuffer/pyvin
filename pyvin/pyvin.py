@@ -13,7 +13,7 @@ from .utils import clean_vins, validate_vin
 
 _URL = 'https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVINValuesBatch/'
 _SESSION = Session()
-_MAX_BATCH_SIZE = 100
+_MAX_BATCH_SIZE = 50
 _RESULTS = 'Results'
 
 RAISE = 'RAISE'
