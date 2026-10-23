@@ -60,7 +60,7 @@ def _transliterate(vin: str) -> List[int]:
     try:
         return [int(x) if x.isdigit() else _TRANS_LOOKUP[x] for x in vin]
     except KeyError as err:
-        raise VINError('Invalid char "%s"' % err.args) from err
+        raise VINError(f'Invalid char "{err.args[0]}"') from err
 
 
 def _remainder_sum_weighted(trans_vin: List[int]) -> int:
@@ -74,7 +74,7 @@ def _remainder_sum_weighted(trans_vin: List[int]) -> int:
     Returns:
         int: remainder
     """
-    sum_weighted = sum([x * y for x, y in zip(trans_vin, _WEIGHTING_FACTORS)])
+    sum_weighted = sum(x * y for x, y in zip(trans_vin, _WEIGHTING_FACTORS))
     return sum_weighted % _SUM_WEIGHTED_DIVIDEBY
 
 
@@ -94,9 +94,9 @@ def _compare_check_digit(vin: str, remainder: int):
     else:
         rem_val = str(remainder)
     if check_digit != rem_val:
-        msg = 'Invalid check digit! %s does not match computed val %s' % (check_digit, rem_val)
+        msg = f'Invalid check digit! {check_digit} does not match computed val {rem_val}'
         raise VINError(msg)
-    logger.debug("%s check [OK]")
+    logger.debug("%s check [OK]", vin)
 
 
 def validate_vin(*vins: str):
@@ -110,7 +110,7 @@ def validate_vin(*vins: str):
             raise VINError('VIN cannot be None')
 
         if len(vin) != _VIN_LENGTH:
-            raise VINError('Invalid VIN length (must be 17 characters): {}'.format(len(vin)))
+            raise VINError(f'Invalid VIN length (must be 17 characters): {len(vin)}')
 
         trans_vin = _transliterate(vin=vin)
         rem = _remainder_sum_weighted(trans_vin=trans_vin)

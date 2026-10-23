@@ -62,7 +62,7 @@ def VIN(*vins: str, error_handling=SKIP) -> Union[List[DecodedVIN], DecodedVIN]:
 
     count = len(vins)
     if count > _MAX_BATCH_SIZE:
-        raise VINError('VIN count exceeds Max Batch Size of %s' % _MAX_BATCH_SIZE)
+        raise VINError(f'VIN count exceeds Max Batch Size of {_MAX_BATCH_SIZE}')
 
     vin_str = ';'.join(vins)
     post_fields = {'format': 'json',
