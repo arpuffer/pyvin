@@ -9,6 +9,28 @@ from tests.vin_samples import (
 )
 
 
+class TestDecodedVIN(unittest.TestCase):
+    def test_repr(self):
+        vin = DecodedVIN(DECODED_TOYOTA_COROLLA)
+        self.assertEqual(
+            repr(vin),
+            "DecodedVIN - JT2AE09W4P0038539 - 1993 - TOYOTA M - Corolla",
+        )
+
+    def test_repr_short_or_missing_manufacturer(self):
+        for manufacturer, expected in (("Toyota", "Toyota"), (None, "")):
+            with self.subTest(manufacturer=manufacturer):
+                data = dict(DECODED_TOYOTA_COROLLA)
+                if manufacturer is None:
+                    data.pop("Manufacturer")
+                else:
+                    data["Manufacturer"] = manufacturer
+                self.assertEqual(
+                    repr(DecodedVIN(data)),
+                    f"DecodedVIN - JT2AE09W4P0038539 - 1993 - {expected} - Corolla",
+                )
+
+
 class TestPyVin(unittest.TestCase):
     def setUp(self):
         fixture = Path(__file__).with_name("fixtures") / "vpic_responses.json"

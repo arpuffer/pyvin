@@ -28,6 +28,16 @@ class DecodedVIN:  # pylint:disable=too-few-public-methods
     def __init__(self, data: dict):
         self.__dict__.update(data)
 
+    def __repr__(self):
+        return " - ".join(
+            (
+                self.__class__.__name__,
+                self.__dict__.get("VIN"),
+                self.__dict__.get("ModelYear"),
+                self.__dict__.get("Manufacturer", "")[:8],
+                self.__dict__.get("Model"),
+            )
+        )
 
 @retry(exceptions=JSONDecodeError,
        tries=10,
