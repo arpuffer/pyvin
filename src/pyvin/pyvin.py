@@ -39,6 +39,7 @@ class DecodedVIN:  # pylint:disable=too-few-public-methods
             )
         )
 
+
 @retry(exceptions=JSONDecodeError,
        tries=10,
        delay=10)
